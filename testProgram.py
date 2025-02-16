@@ -6,7 +6,8 @@ def main():
     dict = {
         "option":1,
         "searchTerm":"yes",
-        "category":""
+        "category":"",
+        "hasValidData":1
     }
 
     # jsonify the dictionary -- can only send a string
