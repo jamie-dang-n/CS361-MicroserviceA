@@ -4,10 +4,9 @@ import json
 def main():
     # set up dictionary
     dict = {
-        "option":1,
-        "searchTerm":"yes",
-        "category":"",
-        "hasValidData":1
+        "option":2,
+        "searchTerm":"ace",
+        "category":2,
     }
 
     # jsonify the dictionary -- can only send a string
@@ -25,27 +24,10 @@ def main():
 
     # get the response
     message = socket.recv()
-    print(f"Response sent back: {message}")
+
+    # convert byte string message to json
+    decoded = json.loads(message.decode('utf-8'))
+    print(f"Response sent back: {decoded}")
 
 if __name__ == "__main__":
     main()
-
-"""
-Sender.py
-#   Connects REQ socket to tcp://localhost:5555
-import zmq
-
-context = zmq.Context()
-
-#  Socket to talk to server
-print("Connecting to server…")
-socket = context.socket(zmq.REQ)
-socket.connect("tcp://localhost:5555")
-
-#  send request
-socket.send(b"This is a messsage from CS361")
-
-# get the response
-message = socket.recv()
-print(f"Request sent: {message}")
-"""
