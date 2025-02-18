@@ -30,12 +30,10 @@ jsonInput = json.dumps(dict, default=str)
 
 # set up ZeroMQ
 context = zmq.Context()
-print("Connecting to server…")
 socket = context.socket(zmq.REQ)
 socket.connect("tcp://localhost:5555")
 
 # send request (the byte string!)
-print(f"Request sent: {jsonInput}")
 socket.send_string(jsonInput)
 ```
 
