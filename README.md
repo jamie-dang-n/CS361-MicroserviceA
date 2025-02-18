@@ -49,3 +49,5 @@ decoded = json.loads(message.decode('utf-8'))
 # print the decoded json list
 print(f"Response sent back: {decoded}")
 ```
+# UML Sequence Diagram
+TBA
