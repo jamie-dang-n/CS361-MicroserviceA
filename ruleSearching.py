@@ -9,7 +9,7 @@ Expected input format: jsonified dictionary (let "" represent a null (empty) str
 input_dict = {
     "option": [value is 1, 2, or 3],
     "searchTerm": [value is a string, cannot be ""],
-    "category": [value is "" for option == 1 or 3, but integer value (1 for spell or 2 for abilities) is required for option == 2.]
+    "category": [value is "" for option == 1 or 3, but integer value (1 for spells or 2 for feats) is required for option == 2.]
 }
 Option = 1 -> search for rules by keyword
 Option = 2 -> search for Spells/Feats by keyword
@@ -41,7 +41,7 @@ def main():
     context = zmq.Context()
     socket = context.socket(zmq.REP)
 
-    # Binds REP socket to tcp://*:5555
+    # Binds REP socket to tcp://localhost:5555
     socket.bind("tcp://localhost:5555")
 
     # Wait for next request from client
