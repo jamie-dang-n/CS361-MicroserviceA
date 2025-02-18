@@ -1,9 +1,9 @@
 # Prerequisites
-This microservice is written in Python and requires the use of **ZeroMQ** to pipe communications between two independent python processes. The microservice **must be started up and listening** to make calls to the API. To start up the microservice, you can write: 
+This microservice is written in Python and requires the use of **ZeroMQ** to pipe communications between two independent Python processes. The microservice **must be started up and listening** to make calls to the API. To start up the microservice, you can write: 
 ```
 python ruleSearching.py
 ```
-**Packages required to send/receive data are ```zmq``` and ```json```.**
+**Packages required to send/receive data are ```zmq``` and ```json```.** When the microservice completes returning a response, you'll need to start it again.
 
 # How to REQUEST Data
 ALL data must be sent as a dictionary, encoded into a byte string. The expected dictionary format is as follows:
