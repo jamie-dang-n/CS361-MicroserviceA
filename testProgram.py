@@ -2,14 +2,14 @@ import zmq
 import json
 
 def main():
-    # set up dictionary
+    # set up dictionary input
     dict = {
-        "option":2,
-        "searchTerm":"ace",
+        "option":3,
+        "searchTerm":"Damage and HEALING",
         "category":2,
     }
 
-    # jsonify the dictionary -- can only send a string
+    # jsonify the dictionary -- can only send a byte string
     jsonInput = json.dumps(dict, default=str)
 
     # set up ZeroMQ
@@ -22,7 +22,7 @@ def main():
     print(f"Request sent: {jsonInput}")
     socket.send_string(jsonInput)
 
-    # get the response
+    # get the response -- IT WILL BE A BYTE STRING
     message = socket.recv()
 
     # convert byte string message to json
