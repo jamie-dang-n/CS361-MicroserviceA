@@ -3,7 +3,7 @@ This microservice is written in Python and requires the use of **ZeroMQ** to pip
 ```
 python ruleSearching.py
 ```
-Packages required to send/receive data are ```zmq``` and ```json```.
+**Packages required to send/receive data are ```zmq``` and ```json```.**
 
 # How to REQUEST Data
 ALL data must be sent as a dictionary, encoded into a byte string. The expected dictionary format is as follows:
