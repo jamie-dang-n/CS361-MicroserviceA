@@ -19,7 +19,7 @@ Output Format: a list of matching JSON objects
 """
 
 # valid fields for the input dictionary
-valid_fields = ['option', 'searchTerm', 'category', 'hasValidData']
+valid_fields = ['option', 'searchTerm', 'category']
 
 # valid fields for the "spell" part of the API
 valid_spell_fields = ['range_unit', 'shape_size_unit', 'name', 'desc', 'higher_level', 'target_type', 'range_text', 'casting_time', 'material_specified', 'saving_throw_ability', 'duration']
@@ -44,46 +44,53 @@ def main():
     # Binds REP socket to tcp://localhost:5555
     socket.bind("tcp://localhost:5555")
 
-    # Wait for next request from client
-    # Requests will always come in byte string form
-    message = socket.recv()
-    print(f"Received request: {message}")
+    proceed = 1
+    while (proceed != 0):
+        # Wait for next request from client
+        # Requests will always come in byte string form
+        print("Rule searching service listening...")
+        message = socket.recv()
+        print(f"Received request: {message}")
 
-    # convert byte string message to json
-    decoded = json.loads(message.decode('utf-8'))
-    print(f"Decoded request: {decoded}")
+        # convert byte string message to json
+        decoded = json.loads(message.decode('utf-8'))
+        print(f"Decoded request: {decoded}")
 
-    # check validity -- searchTerm exists and is not empty
-    if (len(decoded['searchTerm']) > 0):
-        # if searchTerm exists, make searchTerm lowercase
-        # (case insensitive search)
-        decoded['searchTerm'] = decoded['searchTerm'].lower()
-  
-        option = convertInt(decoded, valid_fields[0])
-        if (option < 1 or option > 3):
-             socket.send(b"Error: Invalid option chosen.")
+        proceed = convertInt(decoded, valid_fields[0])
+        if (proceed != 0):
+            # check validity -- searchTerm exists and is not empty
+            if (len(decoded['searchTerm']) > 0):
+                # if searchTerm exists, make searchTerm lowercase
+                # (case insensitive search)
+                decoded['searchTerm'] = decoded['searchTerm'].lower()
+        
+                option = convertInt(decoded, valid_fields[0])
+                if (option < 1 or option > 3):
+                    socket.send(b"Error: Invalid option chosen.")
+                else:
+                    # do the appropriate search and store
+                    # the matching results in returnArray
+                    returnArray = []
+
+                    if (option == 1):
+                        returnArray = findRules(decoded)
+                    elif (option == 2):
+                        returnArray = findSpellsFeats(decoded)
+                    elif (option == 3):
+                        returnArray = findMechanics(decoded)
+
+                    # convert returnArray to byte string
+                    jsonReturnString = json.dumps(returnArray)
+                    returnByteString = jsonReturnString.encode('utf-8')
+                    
+                    # send response to client
+                    socket.send(returnByteString)
+            else:
+                # invalid input, send back a bytestring error message
+                socket.send(b"Error: invalid input")
         else:
-            # do the appropriate search and store
-            # the matching results in returnArray
-            returnArray = []
-
-            if (option == 1):
-                returnArray = findRules(decoded)
-            elif (option == 2):
-                returnArray = findSpellsFeats(decoded)
-            elif (option == 3):
-                returnArray = findMechanics(decoded)
-
-            # convert returnArray to byte string
-            jsonReturnString = json.dumps(returnArray)
-            returnByteString = jsonReturnString.encode('utf-8')
-            print(f"Returned byte string: {returnByteString}")
-            
-            # send response to client
-            socket.send(returnByteString)
-    else:
-        # invalid input, send back a bytestring error message
-        socket.send(b"Error: invalid input")
+            # send quit confirmation
+            socket.send(b"Rule Searching microservice has exited per your request.")
 
 
 # convertInt is used to convert fields
