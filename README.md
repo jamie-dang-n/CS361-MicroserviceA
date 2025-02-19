@@ -50,4 +50,4 @@ decoded = json.loads(message.decode('utf-8'))
 print(f"Response sent back: {decoded}")
 ```
 # UML Sequence Diagram
-TBA
+![UML Sequence Diagram for Rule Searching Microservice](https://github.com/jamie-dang-n/CS361-MicroserviceA/blob/main/MicroserviceA-UML.png)
