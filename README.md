@@ -3,18 +3,23 @@ This microservice is written in Python and requires the use of **ZeroMQ** to pip
 ```
 python ruleSearching.py
 ```
-**Packages required to send/receive data are ```zmq``` and ```json```.** When the microservice completes returning a response, you'll need to start it again.
+**Packages required to send/receive data are ```zmq``` and ```json```.** The microservice will continually listen until it receives a certain type of input, explained in the section below.
 
 # How to REQUEST Data
 ALL data must be sent as a dictionary, encoded into a byte string. The expected dictionary format is as follows:
 ```
 input_dict = {
-    "option": [value is 1, 2, or 3],
+    "option": [value is 0, 1, 2, or 3],
     "searchTerm": [value is a string, cannot be ""],
     "category": [value is 1, 2, or ""]
 }
 ```
-```option``` = 1 indicates searching for rules by keyword. ```option``` = 2 indicates searching for spells/feats by keyword. ```option``` = 3 indicates searching for game mechanics by keyword. The keyword to search by is stored in ```searchTerm```. ```category``` is only required when searching for spells/feats by keyword. In that case, ```category``` = 1 indicates searching for a spell, ```category``` = 2 indicates searching for a feat.
+```option``` = 0 indicates quitting the microservice. The microservice will continue listening for a request otherwise.
+```option``` = 1 indicates searching for rules by keyword. 
+```option``` = 2 indicates searching for spells/feats by keyword. 
+```option``` = 3 indicates searching for game mechanics by keyword. 
+The keyword to search by is stored in ```searchTerm```. 
+```category``` is only required when searching for spells/feats by keyword. In that case, ```category``` = 1 indicates searching for a spell, ```category``` = 2 indicates searching for a feat.
 
 The requesting Python application must set up a ZeroMQ context. The Rule Searching microservice listens on ```tcp://localhost:5555``` and expects a byte string, which will require using the ```json``` package. An example of sending a request is as follows:
 ```python
@@ -45,9 +50,11 @@ message = socket.recv()
 
 # convert byte string message to json
 decoded = json.loads(message.decode('utf-8'))
+json_loaded = json.loads(decoded)
+json_array = json.dumps(json_loaded, indent=3, sort_keys=True) # indent changes the output format, sort_keys sorts the keys alphabetically each time
 
-# print the decoded json list
-print(f"Response sent back: {decoded}")
+# print the json list
+print(f"Response sent back: {json_array}")
 ```
 # UML Sequence Diagram
 ![UML Sequence Diagram for Rule Searching Microservice](https://github.com/jamie-dang-n/CS361-MicroserviceA/blob/main/MicroserviceA-UML.png)
