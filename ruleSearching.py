@@ -77,7 +77,8 @@ def main():
             # convert returnArray to byte string
             jsonReturnString = json.dumps(returnArray)
             returnByteString = jsonReturnString.encode('utf-8')
-
+            print(f"Returned byte string: {returnByteString}")
+            
             # send response to client
             socket.send(returnByteString)
     else:
@@ -138,14 +139,13 @@ def findSpellsFeats(dict_input):
                     for entry in valid_feats_fields:
                         if (feat[entry]):
                             found = feat[entry].lower().find(dict_input['searchTerm'])
-                            if (found != -1):
+                            if (found == -1):
+                                # search term wasn't found in the entry fields, do further searching
+                                for benefit in feat['benefits']:
+                                    for desc in benefit:
+                                        found = benefit[desc].lower().find(dict_input['searchTerm'])
+                            if (found != -1 and (feat not in outputArray)):
                                 outputArray.append(feat)
-                        if (feat['benefits']): 
-                            for benefit in feat['benefits']:
-                                for desc in benefit:
-                                    found = benefit[desc].lower().find(dict_input['searchTerm'])
-                                    if (found != -1):
-                                        outputArray.append(feat)
     else: 
         print("Invalid category input.")
                         
@@ -162,14 +162,13 @@ def findMechanics(dict_input):
                     for entry in valid_ruleset_fields:
                         if (ruleset[entry]):
                             found = ruleset[entry].lower().find(dict_input['searchTerm'])
-                            if (found != -1):
+                            if (found == -1):
+                                # search term wasn't found in the entry fields, do further searching
+                                for rule in ruleset['rules']:
+                                    for sub_entry in valid_rules_fields:
+                                        found = rule[sub_entry].lower().find(dict_input['searchTerm'])
+                            if (found != -1 and (ruleset not in outputArray)):
                                 outputArray.append(ruleset)
-                        if (ruleset['rules']):
-                            for rule in ruleset['rules']:
-                                for sub_entry in valid_rules_fields:
-                                    found = rule[sub_entry].lower().find(dict_input['searchTerm'])
-                                    if (found != -1):
-                                        outputArray.append(ruleset)
 
     return outputArray
 
