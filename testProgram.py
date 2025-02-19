@@ -1,6 +1,7 @@
 import zmq
 import json
 
+# Receive integer input between minVal and maxVal
 def getInt(minVal, maxVal):
     invalidInput = True
     while (invalidInput):
@@ -14,6 +15,7 @@ def getInt(minVal, maxVal):
             print("Invalid input. Please enter an integer!")
     return intVal
 
+# Get user input and direct communication with the Microservice
 def main():
     option = 1
     # set up ZeroMQ
@@ -31,6 +33,7 @@ def main():
         print("Option 3: Search for game mechanics (rulesets) by keyword")
         option = getInt(0, 3)
 
+        # get further information if user does not quit
         if (option != 0):
             # get user input for searchTerm
             searchTerm = input("Enter your search keyword: ")
@@ -67,7 +70,8 @@ def main():
                 json_array = json.dumps(json_loaded, indent=3, sort_keys=True)
                 print(f"Response sent back: {json_array}")
         else:
-            # set up dictionary input
+            # user chose to quit
+            # set up dictionary input to communicate quitting
             dict = {
                 "option":option,
                 "searchTerm":"",

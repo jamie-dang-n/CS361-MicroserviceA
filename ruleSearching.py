@@ -7,10 +7,11 @@ The Rule Searching Microservice (microservice A) uses ZeroMQ to send responses/r
 
 Expected input format: jsonified dictionary (let "" represent a null (empty) string)
 input_dict = {
-    "option": [value is 1, 2, or 3],
+    "option": [value is 0, 1, 2, or 3],
     "searchTerm": [value is a string, cannot be ""],
     "category": [value is "" for option == 1 or 3, but integer value (1 for spells or 2 for feats) is required for option == 2.]
 }
+Option = 0 -> quit the microservice
 Option = 1 -> search for rules by keyword
 Option = 2 -> search for Spells/Feats by keyword
 Option = 3 -> search for game mechanics (rulesets) by keyword
@@ -45,7 +46,7 @@ def main():
     socket.bind("tcp://localhost:5555")
 
     proceed = 1
-    while (proceed != 0):
+    while (proceed != 0): # continue while option != 0
         # Wait for next request from client
         # Requests will always come in byte string form
         print("Rule searching service listening...")
@@ -56,6 +57,7 @@ def main():
         decoded = json.loads(message.decode('utf-8'))
         print(f"Decoded request: {decoded}")
 
+        # check if option is 0-- if it is, quit the program
         proceed = convertInt(decoded, valid_fields[0])
         if (proceed != 0):
             # check validity -- searchTerm exists and is not empty
